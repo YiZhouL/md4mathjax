@@ -67,15 +67,16 @@ class MathJaxAddJavaScript(Treeprocessor):
         if not self.extension.mathjax_needed:
             return root
 
-        mathjax_script_settings = ET.Element("script")
-        mathjax_script_settings.text = self.extension.getConfig(
-            "mathjax_settings")
-        root.append(mathjax_script_settings)
+        if not self.extension.getConfig("only_tag"):
+            mathjax_script_settings = ET.Element("script")
+            mathjax_script_settings.text = self.extension.getConfig(
+                "mathjax_settings")
+            root.append(mathjax_script_settings)
 
-        mathjax_script = ET.Element("script")
-        mathjax_script.attrib['src'] = self.extension.getConfig("mathjax_src")
-        mathjax_script.attrib['id'] = self.extension.getConfig("mathjax_id")
-        root.append(mathjax_script)
+            mathjax_script = ET.Element("script")
+            mathjax_script.attrib['src'] = self.extension.getConfig("mathjax_src")
+            mathjax_script.attrib['id'] = self.extension.getConfig("mathjax_id")
+            root.append(mathjax_script)
 
         # Reset the boolean switch to false
         self.extension.mathjax_needed = False
@@ -100,7 +101,9 @@ class Md4MathjaxExtension(Extension):
             "mathjax_id": ['MathJax-script',
                            'the mathjax script id value'],
             "mathjax_settings": [DEFUALT_MATHJAX_SETTING,
-                                 'mathjax settings']
+                                 'mathjax settings'],
+            "only_tag": [True,
+                         "just add tag."]
         }
         # mainly set config
         super().__init__(**kwargs)
